@@ -1,9 +1,9 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import WelcomeScreen from "./WelcomeScreen";
-import ManualUploadScreen from "./ManualUploadScreen";
-import ScanUploadScreen from "./ScanUploadScreen";
+import WelcomeScreen from "./components/WelcomeScreen";
+import ManualUploadScreen from "./components/ManualUploadScreen";
+import ScanUploadScreen from "./components/ScanUploadScreen";
 
 const Stack = createStackNavigator();
 

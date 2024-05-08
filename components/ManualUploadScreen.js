@@ -5,7 +5,7 @@ const ManualUploadScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Manual Upload Screen</Text>
-      {/* Add your manual upload functionality here */}
+      {/* Add manual upload functionality here */}
     </View>
   );
 };
