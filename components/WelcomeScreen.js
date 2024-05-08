@@ -12,6 +12,15 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Back, {userName}. </Text>
+      <Text style={styles.introText}>
+        <Text>Aw, you currently have no items listed in your store.</Text>
+        {"\n"}
+        <Text>
+          List some items by manual upload or by using our{"\n"} new AI feature
+          to scan and upload your items{"\n"} and start trading! 🤗
+        </Text>{" "}
+      </Text>
+
       <View style={styles.lot}>
         <LottieView
           style={{ flex: 1 }}
@@ -25,7 +34,7 @@ const WelcomeScreen = () => {
         <Pressable
           style={({ pressed }) => [
             styles.button,
-            { backgroundColor: pressed ? "#11224D" : "#fff" },
+            { backgroundColor: pressed ? "#5B84C4" : "#fff", borderRadius: 18 },
           ]}
           title="Upload Item Manually"
           onPress={() => navigation.navigate("ManualUpload")}
@@ -40,7 +49,7 @@ const WelcomeScreen = () => {
         <Pressable
           style={({ pressed }) => [
             styles.button,
-            { backgroundColor: pressed ? "#F98125" : "#fff" },
+            { backgroundColor: pressed ? "#FB9B50" : "#fff", borderRadius: 18 },
           ]}
           onPress={() => navigation.navigate("ScanUpload")}
         >
@@ -60,25 +69,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20, // Add padding to push content down
+    paddingTop: 20,
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20, // Add margin to separate from buttons
+    marginTop: 20,
+  },
+  introText: {
+    fontSize: 20,
+    color: "grey",
+    textAlign: "center",
   },
   buttonContainer1: {
     borderWidth: 4,
     borderColor: "#11224D",
     borderRadius: 18,
+    marginBottom: -10,
   },
   buttonContainer2: {
     borderWidth: 4,
     borderColor: "#F98125",
     borderRadius: 18,
+    marginTop: -10,
   },
   button: {
-    padding: 10,
+    padding: 15,
+    borderRadius: 18,
   },
   buttonContent: {
     flexDirection: "row",
