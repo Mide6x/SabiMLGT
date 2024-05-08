@@ -1,16 +1,26 @@
 import React from "react";
 import { View, Text, Button, Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
 
-  const userName = "Team Pheonix";
+  const userName = "Team Phoenix";
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Back, {userName}. </Text>
+      <View style={styles.lot}>
+        <LottieView
+          style={{ flex: 1 }}
+          source={require("../assets/Animation - 1715169001943.json")}
+          autoPlay
+          loop
+        />
+      </View>
+
       <View style={styles.buttonContainer1}>
         <Pressable
           style={({ pressed }) => [
@@ -21,7 +31,7 @@ const WelcomeScreen = () => {
           onPress={() => navigation.navigate("ManualUpload")}
         >
           <View style={styles.buttonContent}>
-            <Text style={styles.buttonLabel}>Scan to Upload</Text>
+            <Text style={styles.buttonLabel}>Upload Store Item Manually</Text>
           </View>
         </Pressable>
       </View>
@@ -47,7 +57,8 @@ const WelcomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
+    justifyContent: "space-around",
+    backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 20, // Add padding to push content down
   },
@@ -77,6 +88,11 @@ const styles = StyleSheet.create({
   buttonLabel: {
     color: "#25292e",
     marginLeft: 10,
+  },
+  lot: {
+    width: "100%", // Specify width to ensure LottieView takes up the entire width
+    height: 300,
+    aspectRatio: 1,
   },
 });
 
