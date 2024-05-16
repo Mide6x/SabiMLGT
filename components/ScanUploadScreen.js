@@ -67,9 +67,8 @@ const ScanUploadScreen = () => {
         GlobalParameters: {},
       };
 
-      const apiUrl =
-        "http://79ca65b6-7beb-416a-9f62-8e649e0c294f.eastus2.azurecontainer.io/score";
-      const apiKey = "cPy8D0fS7BTVMTDc34WHnZiVrKhM1nNW";
+      const apiUrl = "api";
+      const apiKey = "apikey";
 
       const headers = {
         "Content-Type": "application/json",
@@ -116,6 +115,7 @@ const ScanUploadScreen = () => {
         <View>
           <Text>Classification Result:</Text>
           <Text>{JSON.stringify(classificationResult, null, 2)}</Text>
+          <Text></Text>
         </View>
       )}
     </View>
