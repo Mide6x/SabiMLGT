@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import WelcomeScreen from "./components/WelcomeScreen";
 import ManualUploadScreen from "./components/ManualUploadScreen";
 import ScanUploadScreen from "./components/ScanUploadScreen";
+import UpdatedStore from "./components/UpdatedStore";
 import CustomHeader from "./components/CustomHeader"; // Import custom header component
 
 const Stack = createStackNavigator();
@@ -19,6 +20,7 @@ const App = () => {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="ManualUpload" component={ManualUploadScreen} />
         <Stack.Screen name="ScanUpload" component={ScanUploadScreen} />
+        <Stack.Screen name="UpdatedStore" component={UpdatedStore} />
       </Stack.Navigator>
     </NavigationContainer>
   );

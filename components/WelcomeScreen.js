@@ -13,11 +13,11 @@ const WelcomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Back, {userName}. </Text>
       <Text style={styles.introText}>
-        <Text>Aw, you currently have no items listed in your store.</Text>
+        <Text>So glad you’re back. </Text>
         {"\n"}
         <Text>
-          List some items by manual upload or by using our{"\n"} new AI feature
-          to scan and upload your items{"\n"} and start trading! 🤗
+          Continue to list some items by manual upload or by using our{"\n"} new
+          AI feature to upload your items{"\n"} and start trading! 🤗
         </Text>{" "}
       </Text>
 
