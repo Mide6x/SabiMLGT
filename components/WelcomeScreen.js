@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -11,15 +11,13 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome Back, {userName}. </Text>
-      <Text style={styles.introText}>
-        <Text>So glad you’re back. </Text>
-        {"\n"}
-        <Text>
-          Continue to list some items by manual upload or by using our{"\n"} new
-          AI feature to upload your items{"\n"} and start trading! 🤗
-        </Text>{" "}
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.welcomeText}>Welcome Back, {userName} 👋 </Text>
+        <Text style={styles.introText}>
+          So glad you’re back. Continue to list some items by manual upload or
+          by using our new AI feature to upload your items and start trading! 🤗
+        </Text>
+      </View>
 
       <View style={styles.lot}>
         <LottieView
@@ -34,13 +32,12 @@ const WelcomeScreen = () => {
         <Pressable
           style={({ pressed }) => [
             styles.button,
-            { backgroundColor: pressed ? "#5B84C4" : "#fff", borderRadius: 18 },
+            pressed ? styles.pressedButton : null,
           ]}
-          title="Upload Item Manually"
           onPress={() => navigation.navigate("ManualUpload")}
         >
           <View style={styles.buttonContent}>
-            <Text style={styles.buttonLabel}>Upload Store Item Manually</Text>
+            <Text style={styles.buttonLabel}>Update Manually</Text>
           </View>
         </Pressable>
       </View>
@@ -48,14 +45,14 @@ const WelcomeScreen = () => {
       <View style={styles.buttonContainer2}>
         <Pressable
           style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: pressed ? "#FB9B50" : "#fff", borderRadius: 18 },
+            styles.button1,
+            pressed ? styles.pressedButton : null,
           ]}
           onPress={() => navigation.navigate("ScanUpload")}
         >
           <View style={styles.buttonContent}>
-            <FontAwesome name="picture-o" size={12} color="#25292e" />
-            <Text style={styles.buttonLabel}>Scan to Upload</Text>
+            <FontAwesome name="picture-o" size={12} color="#193735" />
+            <Text style={styles.buttonLabel2}>Scan to Upload</Text>
           </View>
         </Pressable>
       </View>
@@ -66,15 +63,19 @@ const WelcomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around",
-    backgroundColor: "#fff",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
+  },
+  header: {
+    alignItems: "center",
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 20,
+    textAlign: "center",
+    height: 100,
   },
   introText: {
     fontSize: 20,
@@ -82,20 +83,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer1: {
-    borderWidth: 4,
-    borderColor: "#11224D",
     borderRadius: 18,
-    marginBottom: -10,
+    marginBottom: 10,
+    width: 235,
   },
   buttonContainer2: {
-    borderWidth: 4,
-    borderColor: "#F98125",
     borderRadius: 18,
-    marginTop: -10,
+    marginTop: 20,
+    width: 235,
+    shadowColor: "#193735",
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 5, // Adjust this value to control how far the shadow drops below
+    },
+    elevation: 6, // For Android
   },
+
   button: {
     padding: 15,
-    borderRadius: 18,
+    borderRadius: 10,
+    backgroundColor: "#193735",
+  },
+  button1: {
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+  },
+  pressedButton: {
+    backgroundColor: "#EEEEEE",
   },
   buttonContent: {
     flexDirection: "row",
@@ -103,7 +120,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonLabel: {
-    color: "#25292e",
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  buttonLabel2: {
+    color: "#193735",
+    fontSize: 16,
+    fontWeight: "bold",
     marginLeft: 10,
   },
   lot: {

@@ -6,15 +6,17 @@ const UpdatedStore = ({ route }) => {
   const { imageUri, tag, price, minOrderQuantity } = route.params;
   const navigation = useNavigation();
 
+  const userName = "Team Phoenix";
+
   return (
     <View style={styles.container}>
       <View style={styles.itemContainer}>
         <Image source={{ uri: imageUri }} style={styles.image} />
         <View style={styles.detailsContainer}>
           <Text style={styles.tagText}>{tag}</Text>
-          <Text style={styles.detailText}>Price: ₦{price}</Text>
+          <Text style={styles.detailText}>PRICE: ₦{price}</Text>
           <Text style={styles.detailText}>
-            Min. Order Quantity: {minOrderQuantity}
+            MIN. ORDER QUANTITY: {minOrderQuantity} Packs
           </Text>
         </View>
       </View>
@@ -33,11 +35,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    margin: 10,
   },
   image: {
     width: 100,
@@ -52,10 +55,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#193735",
+    padding: 5,
   },
   detailText: {
     fontSize: 16,
     color: "#193735",
+    padding: 5,
   },
   backButton: {
     backgroundColor: "#193735",

@@ -13,6 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const ScanUploadScreen = () => {
   const [image, setImage] = useState(null);
@@ -27,7 +28,7 @@ const ScanUploadScreen = () => {
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission required", "Please enable camera access");
+      Alert.alert("Permission required", "Please enable photos access");
       return;
     }
 
@@ -107,17 +108,20 @@ const ScanUploadScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.scanText}>Scan Upload Screen</Text>
-      <Button
-        title={isClassified ? "Upload New Image" : "Select Image"}
-        onPress={selectImage}
-      />
+      <TouchableOpacity style={styles.addButton} onPress={selectImage}>
+        <Text style={styles.addButtonText}>
+          {isClassified ? "Upload New Image" : "Select Image"}
+        </Text>
+      </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       {!isClassified && (
-        <Button
-          title="Classify Image"
+        <TouchableOpacity
+          style={[styles.addButton, styles.classifyButton]}
           onPress={classifyImage}
           disabled={isLoading}
-        />
+        >
+          <Text style={styles.addButtonText2}>Classify Image</Text>
+        </TouchableOpacity>
       )}
       {isLoading && <ActivityIndicator size="small" color="#B7B4B4" />}
       {highestProbabilityTag && (
@@ -129,7 +133,7 @@ const ScanUploadScreen = () => {
         <>
           <TextInput
             style={styles.input}
-            placeholder="Input price here"
+            placeholder="Input Item Price"
             placeholderTextColor="#B7B4B4"
             value={price}
             onChangeText={setPrice}
@@ -138,7 +142,7 @@ const ScanUploadScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Minimum order quantity"
+            placeholder="Minimum Order Quantity"
             placeholderTextColor="#B7B4B4"
             value={minOrderQuantity}
             onChangeText={setMinOrderQuantity}
@@ -146,7 +150,7 @@ const ScanUploadScreen = () => {
             returnKeyType="done"
           />
           <TouchableOpacity
-            style={styles.addButton}
+            style={[styles.addButton, styles.classifyButton]}
             onPress={() =>
               navigation.navigate("UpdatedStore", {
                 imageUri: image,
@@ -156,7 +160,7 @@ const ScanUploadScreen = () => {
               })
             }
           >
-            <Text style={styles.addButtonText}>Add Item to Store</Text>
+            <Text style={styles.addButtonText2}>Update Store</Text>
           </TouchableOpacity>
         </>
       )}
@@ -204,7 +208,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: "#193735",
     fontSize: 20,
-    fontWeight: "bold",
+    textAlign: "center",
   },
   addButton: {
     backgroundColor: "#193735",
@@ -213,11 +217,29 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
+    width: 235,
+  },
+  classifyButton: {
+    backgroundColor: "#fff",
+    shadowColor: "#193735",
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 5, // Adjust this value to control how far the shadow drops below
+    },
+    elevation: 6, // For Android
   },
   addButtonText: {
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
+    textAlign: "center",
+  },
+  addButtonText2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#193735",
     textAlign: "center",
   },
 });
