@@ -17,13 +17,15 @@
     "expo": "~51.0.0",
     "expo-file-system": "^17.0.1",
     "expo-image-picker": "~15.0.4",
+    "expo-splash-screen": "~0.27.4",
     "expo-status-bar": "~1.12.1",
     "lottie-react-native": "6.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-image-resizer": "^1.4.5",
     "react-native-web": "~0.19.10",
-    "expo-splash-screen": "~0.27.4"
+    "expo-image-manipulator": "~12.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

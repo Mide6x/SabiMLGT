@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Button,
   Image,
   Alert,
   ActivityIndicator,
@@ -13,7 +12,6 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const ScanUploadScreen = () => {
   const [image, setImage] = useState(null);
@@ -39,29 +37,21 @@ const ScanUploadScreen = () => {
       quality: 1,
     });
 
-    console.log("ImagePicker result: ", result); // Debugging log
-
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-      console.log("Selected image URI: ", uri); // Debugging log
       setImage(uri);
       setIsClassified(false); // Reset classified state
-    } else {
-      console.log("Image selection was cancelled or no assets found."); // Debugging log
+      classifyImage(uri); // Automatically classify the image
     }
   };
 
-  const classifyImage = async () => {
-    if (!image) {
-      Alert.alert("Please select an image first");
-      return;
-    }
-
+  const classifyImage = async (imageUri) => {
     setIsLoading(true);
 
     try {
-      const apiUrl = "";
-      const apiKey = "";
+      const apiUrl =
+        "https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/add4ee45-cfd3-44cb-b971-711b1c48dfc8/classify/iterations/SabiimgClassification_Iteration4/image";
+      const apiKey = "693d0058df314c5fbd055b0f4cfa29e9";
 
       const headers = {
         "Prediction-Key": apiKey,
@@ -70,7 +60,7 @@ const ScanUploadScreen = () => {
 
       const formData = new FormData();
       formData.append("image", {
-        uri: image,
+        uri: imageUri,
         type: "image/jpeg",
         name: "photo.jpg",
       });
@@ -114,15 +104,6 @@ const ScanUploadScreen = () => {
         </Text>
       </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={styles.image} />}
-      {!isClassified && (
-        <TouchableOpacity
-          style={[styles.addButton, styles.classifyButton]}
-          onPress={classifyImage}
-          disabled={isLoading}
-        >
-          <Text style={styles.addButtonText2}>Classify Image</Text>
-        </TouchableOpacity>
-      )}
       {isLoading && <ActivityIndicator size="small" color="#B7B4B4" />}
       {highestProbabilityTag && (
         <View style={styles.resultContainer}>
