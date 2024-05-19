@@ -49,9 +49,8 @@ const ScanUploadScreen = () => {
     setIsLoading(true);
 
     try {
-      const apiUrl =
-        "https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/add4ee45-cfd3-44cb-b971-711b1c48dfc8/classify/iterations/SabiimgClassification_Iteration4/image";
-      const apiKey = "693d0058df314c5fbd055b0f4cfa29e9";
+      const apiUrl = "";
+      const apiKey = "";
 
       const headers = {
         "Prediction-Key": apiKey,
