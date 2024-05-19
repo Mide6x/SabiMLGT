@@ -15,7 +15,7 @@ const WelcomeScreen = () => {
         <Text style={styles.welcomeText}>Welcome Back, {userName} 👋 </Text>
         <Text style={styles.introText}>
           So glad you’re back. Continue to list some items by manual upload or
-          by using our new AI feature to upload your items and start trading! 🤗
+          by using our new AI feature to upload your items and start trading!
         </Text>
       </View>
 
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: {
       width: 0,
-      height: 5, // Adjust this value to control how far the shadow drops below
+      height: 5,
     },
-    elevation: 6, // For Android
+    elevation: 6,
   },
 
   button: {
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     width: "100%", // Specify width to ensure LottieView takes up the entire width
     height: 300,
     aspectRatio: 1,
+    marginBottom: 10,
   },
 });
 

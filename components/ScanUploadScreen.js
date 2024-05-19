@@ -10,6 +10,7 @@ import {
   TextInput,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
@@ -26,7 +27,7 @@ const ScanUploadScreen = () => {
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission required", "Please enable photos access");
+      Alert.alert("Permission required 👉👈", "Please enable photos access");
       return;
     }
 
@@ -39,10 +40,34 @@ const ScanUploadScreen = () => {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-      setImage(uri);
+      // Convert HEIF/HEIC to JPEG if necessary
+      const convertedUri = await convertImageToJpeg(uri);
+      setImage(convertedUri);
       setIsClassified(false); // Reset classified state
-      classifyImage(uri); // Automatically classify the image
+      classifyImage(convertedUri); // Automatically classify the image
     }
+  };
+
+  const convertImageToJpeg = async (uri) => {
+    const { type } = await ImageManipulator.manipulateAsync(uri, [], {
+      base64: false,
+    });
+    const extension = uri.split(".").pop().toLowerCase();
+
+    if (
+      type === "image/heif" ||
+      type === "image/heic" ||
+      extension === "heif" ||
+      extension === "heic"
+    ) {
+      const manipulatedResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        { format: ImageManipulator.SaveFormat.JPG }
+      );
+      return manipulatedResult.uri;
+    }
+    return uri;
   };
 
   const classifyImage = async (imageUri) => {
@@ -67,21 +92,32 @@ const ScanUploadScreen = () => {
       const response = await axios.post(apiUrl, formData, { headers });
 
       const predictions = response.data.predictions;
-      if (predictions && predictions.length > 0) {
+
+      // Filter predictions to only include those with probability > 0.89
+      const validPredictions = predictions.filter(
+        (prediction) => prediction.probability > 0.89
+      );
+
+      if (validPredictions.length > 0) {
         // Find the prediction with the highest probability
-        const highestPrediction = predictions.reduce((prev, current) =>
+        const highestPrediction = validPredictions.reduce((prev, current) =>
           prev.probability > current.probability ? prev : current
         );
         setHighestProbabilityTag(highestPrediction.tagName);
         setIsClassified(true); // Set classified state to true
       } else {
-        setHighestProbabilityTag("No predictions found");
+        Alert.alert(
+          "Low Confidence 🫢",
+          "The system could not confidently classify the image. Please upload a better picture or input the item manually."
+        );
+        setHighestProbabilityTag(null);
+        setIsClassified(false); // Reset classified state
       }
     } catch (error) {
       console.error(error);
       Alert.alert(
-        "Error",
-        "An error occurred during classification. Please try again."
+        "Unknown Error 🥲",
+        "An error occurred during classification. Please try again or input the item manually."
       );
     } finally {
       setIsLoading(false);
@@ -97,9 +133,16 @@ const ScanUploadScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.scanText}>Scan Upload Screen</Text>
+      {!isClassified && (
+        <Text style={styles.introText}>
+          When selecting an image, Please make sure the image is captured in a
+          well lit environment, with the item (i.e Milo) in range. Try as much
+          as possible to reduce the presence of other items from view.
+        </Text>
+      )}
       <TouchableOpacity style={styles.addButton} onPress={selectImage}>
         <Text style={styles.addButtonText}>
-          {isClassified ? "Upload New Image" : "Select Image"}
+          {isClassified ? "Upload New Image" : "Select an Image"}
         </Text>
       </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={styles.image} />}
@@ -156,6 +199,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
+  introText: {
+    fontSize: 20,
+    color: "grey",
+    textAlign: "center",
+  },
   resultContainer: {
     marginVertical: 20,
     justifyContent: "center",
@@ -206,9 +254,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: {
       width: 0,
-      height: 5, // Adjust this value to control how far the shadow drops below
+      height: 5,
     },
-    elevation: 6, // For Android
+    elevation: 6,
   },
   addButtonText: {
     fontSize: 20,

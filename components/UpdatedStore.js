@@ -1,12 +1,10 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const UpdatedStore = ({ route }) => {
   const { imageUri, tag, price, minOrderQuantity } = route.params;
   const navigation = useNavigation();
-
-  const userName = "Team Phoenix";
 
   return (
     <View style={styles.container}>
@@ -20,12 +18,38 @@ const UpdatedStore = ({ route }) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.navigate("Welcome")}
-      >
-        <Text style={styles.backButtonText}>Back to Welcome Screen</Text>
-      </TouchableOpacity>
+      <View>
+        <Text style={styles.introText}>
+          Add more items to your store{"\n"} or view your store page.
+        </Text>
+      </View>
+      <View style={styles.buttonContainer1}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed ? styles.pressedButton : null,
+          ]}
+          onPress={() => navigation.navigate("ScanUpload")}
+        >
+          <View style={styles.buttonContent}>
+            <Text style={styles.buttonLabel}>Scan to Upload</Text>
+          </View>
+        </Pressable>
+      </View>
+
+      <View style={styles.buttonContainer2}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button1,
+            pressed ? styles.pressedButton : null,
+          ]}
+          onPress={() => navigation.navigate("Welcome")}
+        >
+          <View style={styles.buttonContent}>
+            <Text style={styles.buttonLabel2}>View Store</Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -33,14 +57,22 @@ const UpdatedStore = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
+  introText: {
+    fontSize: 20,
+    color: "grey",
+    textAlign: "center",
+    marginBottom: 40,
+    marginTop: 240,
+  },
   itemContainer: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "left",
+    marginTop: 130,
+    marginBottom: 100,
   },
   image: {
     width: 100,
@@ -62,19 +94,53 @@ const styles = StyleSheet.create({
     color: "#193735",
     padding: 5,
   },
-  backButton: {
-    backgroundColor: "#193735",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 20,
+  buttonContainer1: {
+    borderRadius: 18,
+    marginBottom: 10,
+    width: 235,
+    shadowColor: "#193735",
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    elevation: 6,
   },
-  backButtonText: {
-    fontSize: 20,
+  buttonContainer2: {
+    borderRadius: 18,
+    marginTop: 20,
+    width: 235,
+  },
+  button: {
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+  },
+  button1: {
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#193735",
+  },
+  pressedButton: {
+    backgroundColor: "#EEEEEE",
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonLabel: {
+    color: "#193735",
+    fontSize: 16,
     fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
+    marginLeft: 10,
+  },
+  buttonLabel2: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 10,
   },
 });
 
