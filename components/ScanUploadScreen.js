@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Button,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
@@ -21,27 +22,33 @@ const ScanUploadScreen = () => {
   const [isClassified, setIsClassified] = useState(false);
   const [price, setPrice] = useState("");
   const [minOrderQuantity, setMinOrderQuantity] = useState("");
+  const [facing, setFacing] = useState("back");
+  const [permission, requestPermission] = useCameraPermissions();
 
   const navigation = useNavigation();
+  const cameraRef = useRef(null);
 
-  const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission required 👉👈", "Please enable photos access");
-      return;
-    }
+  if (!permission) {
+    return <View />;
+  }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center" }}>
+          We need your permission to show the camera
+        </Text>
+        <Button onPress={requestPermission} title="Permission Request" />
+      </View>
+    );
+  }
 
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      const uri = result.assets[0].uri;
-      // Convert HEIF/HEIC to JPEG if necessary
-      const convertedUri = await convertImageToJpeg(uri);
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 1,
+      });
+      const convertedUri = await convertImageToJpeg(photo.uri);
       setImage(convertedUri);
       setIsClassified(false); // Reset classified state
       classifyImage(convertedUri); // Automatically classify the image
@@ -74,9 +81,8 @@ const ScanUploadScreen = () => {
     setIsLoading(true);
 
     try {
-      const apiUrl =
-        "https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/add4ee45-cfd3-44cb-b971-711b1c48dfc8/classify/iterations/Iteration5/image";
-      const apiKey = "693d0058df314c5fbd055b0f4cfa29e9";
+      const apiUrl = "";
+      const apiKey = "";
 
       const headers = {
         "Prediction-Key": apiKey,
@@ -125,28 +131,25 @@ const ScanUploadScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (image) {
-      setHighestProbabilityTag(null);
-    }
-  }, [image]);
-
   return (
     <View style={styles.container}>
       <Text style={styles.scanText}>Scan Upload Screen</Text>
       {!isClassified && (
-        <Text style={styles.introText}>
-          When selecting an image, Please make sure the image is captured in a
-          well lit environment, with the item (i.e Milo) in range. Try as much
-          as possible to reduce the presence of other items from view.
-        </Text>
+        <>
+          <Text style={styles.introText}>
+            When taking a picture, please make sure the image is captured in a
+            well-lit environment, with the item (e.g., Milo) in range. Try to
+            reduce the presence of other items from view.
+          </Text>
+          <CameraView style={styles.camera} ref={cameraRef}>
+            <View style={styles.buttonContainer}></View>
+          </CameraView>
+          <TouchableOpacity style={styles.cameraButton} onPress={takePicture}>
+            <Text style={styles.cameraButtonText}>Take Picture</Text>
+          </TouchableOpacity>
+        </>
       )}
-      <TouchableOpacity style={styles.addButton} onPress={selectImage}>
-        <Text style={styles.addButtonText}>
-          {isClassified ? "Upload New Image" : "Select an Image"}
-        </Text>
-      </TouchableOpacity>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
+
       {isLoading && <ActivityIndicator size="small" color="#B7B4B4" />}
       {highestProbabilityTag && (
         <View style={styles.resultContainer}>
@@ -155,6 +158,7 @@ const ScanUploadScreen = () => {
       )}
       {isClassified && (
         <>
+          {image && <Image source={{ uri: image }} style={styles.image} />}
           <TextInput
             style={styles.input}
             placeholder="Input Item Price"
@@ -204,6 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "grey",
     textAlign: "center",
+    marginBottom: 20,
   },
   resultContainer: {
     marginVertical: 20,
@@ -221,6 +226,34 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#193735",
     marginBottom: 20,
+  },
+  camera: {
+    width: "100%",
+    height: 400,
+    borderRadius: 15,
+  },
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    borderRadius: 15,
+  },
+  cameraButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#193735",
+    padding: 15,
+    width: 235,
+    marginTop: 75,
+    borderRadius: 5,
+  },
+  cameraButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   image: {
     width: 309,
