@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { Dropdown } from "react-native-element-dropdown";
 
 const ScanUploadScreen = () => {
   const [image, setImage] = useState(null);
@@ -22,11 +23,43 @@ const ScanUploadScreen = () => {
   const [isClassified, setIsClassified] = useState(false);
   const [price, setPrice] = useState("");
   const [minOrderQuantity, setMinOrderQuantity] = useState("");
-  const [facing, setFacing] = useState("back");
+  const [variant, setVariant] = useState("");
+  const [variants, setVariants] = useState([]);
   const [permission, requestPermission] = useCameraPermissions();
 
   const navigation = useNavigation();
   const cameraRef = useRef(null);
+
+  useEffect(() => {
+    if (highestProbabilityTag) {
+      updateVariants(highestProbabilityTag);
+    }
+  }, [highestProbabilityTag]);
+
+  const updateVariants = (tag) => {
+    const variantOptions = {
+      "Milo Chocolate-Flavoured Powder Tin": [
+        { label: "400g x1", value: "400g x1" },
+        { label: "400g x12", value: "400g x12" },
+      ],
+      "Mimee Instant Noodles Chicken Flavour": [
+        { label: "100g x40", value: "100g x40" },
+        { label: "120g x40", value: "120g x40" },
+        { label: "70g x40", value: "70g x40" },
+      ],
+      "Peak Full Cream Milk Tin": [{ label: "400g x6", value: "400g x6" }],
+      "Golden Penny Sugar Cube": [{ label: "500g x50", value: "500g x50" }],
+    };
+
+    if (variantOptions[tag]) {
+      setVariants(variantOptions[tag]);
+      if (variantOptions[tag].length === 1) {
+        setVariant(variantOptions[tag][0].value); // Auto-select single variant
+      }
+    } else {
+      setVariants([]);
+    }
+  };
 
   if (!permission) {
     return <View />;
@@ -36,7 +69,7 @@ const ScanUploadScreen = () => {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
-          We need your permission to show the camera
+          We will need your permission for camera access
         </Text>
         <Button onPress={requestPermission} title="Permission Request" />
       </View>
@@ -96,9 +129,15 @@ const ScanUploadScreen = () => {
         name: "photo.jpg",
       });
 
+      console.log("Sending request to API..."); //logs for debuggung
+      console.log("URL:", apiUrl);
+      console.log("Headers:", headers);
+      console.log("FormData:", formData);
+
       const response = await axios.post(apiUrl, formData, { headers });
 
       const predictions = response.data.predictions;
+      console.log("Response:", response.data); //logs for debugging
 
       // Filter predictions to only include those with probability > 0.89
       const validPredictions = predictions.filter(
@@ -150,15 +189,39 @@ const ScanUploadScreen = () => {
         </>
       )}
 
-      {isLoading && <ActivityIndicator size="small" color="#B7B4B4" />}
-      {highestProbabilityTag && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>{highestProbabilityTag}</Text>
-        </View>
+      {isLoading && (
+        <>
+          <ActivityIndicator size="medium" color="#B7B4B4" />
+          <Text style={styles.loadText}>
+            Please wait while we classify your image
+          </Text>
+        </>
       )}
+
       {isClassified && (
         <>
           {image && <Image source={{ uri: image }} style={styles.image} />}
+          {highestProbabilityTag && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.resultText}>{highestProbabilityTag}</Text>
+
+              {variants.length > 0 && (
+                <Dropdown
+                  style={[styles.dropdown]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  data={variants}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select a Variant"
+                  value={variant}
+                  onChange={(item) => {
+                    setVariant(item.value);
+                  }}
+                />
+              )}
+            </View>
+          )}
           <TextInput
             style={styles.input}
             placeholder="Input Item Price"
@@ -185,6 +248,7 @@ const ScanUploadScreen = () => {
                 tag: highestProbabilityTag,
                 price,
                 minOrderQuantity,
+                variant,
               })
             }
           >
@@ -204,6 +268,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "#193735",
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: "#193735",
+    textAlign: "center",
+    fontWeight: "600",
+  },
   introText: {
     fontSize: 20,
     color: "grey",
@@ -220,6 +294,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#193735",
     textAlign: "center",
+    marginVertical: 15,
   },
   scanText: {
     fontSize: 24,
@@ -231,6 +306,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 400,
     borderRadius: 15,
+  },
+  loadText: {
+    fontSize: 15,
+    fontWeight: "bold",
+    textAlign: "center",
+    height: 100,
+    marginTop: 20,
   },
   buttonContainer: {
     flex: 1,
@@ -256,14 +338,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   image: {
-    width: 309,
-    height: 340,
-    marginVertical: 10,
+    width: 350,
+    height: 330,
+    marginVertical: 5,
     borderRadius: 10,
   },
   input: {
     width: "80%",
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 10,
     backgroundColor: "#EEEEEE",
@@ -272,13 +354,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
   },
+  dropdown: {
+    width: 200,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    color: "#193735",
+    backgroundColor: "#EEEEEE",
+  },
   addButton: {
     backgroundColor: "#193735",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
     width: 235,
   },
   classifyButton: {

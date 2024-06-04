@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const UpdatedStore = ({ route }) => {
-  const { imageUri, tag, price, minOrderQuantity } = route.params;
+  const { imageUri, tag, variant, price, minOrderQuantity } = route.params;
   const navigation = useNavigation();
 
   return (
@@ -12,6 +12,7 @@ const UpdatedStore = ({ route }) => {
         <Image source={{ uri: imageUri }} style={styles.image} />
         <View style={styles.detailsContainer}>
           <Text style={styles.tagText}>{tag}</Text>
+          <Text styles={styles.detailText}>VARIANT: {variant}</Text>
           <Text style={styles.detailText}>PRICE: ₦{price}</Text>
           <Text style={styles.detailText}>
             MIN. ORDER QUANTITY: {minOrderQuantity} Packs
@@ -29,24 +30,10 @@ const UpdatedStore = ({ route }) => {
             styles.button,
             pressed ? styles.pressedButton : null,
           ]}
-          onPress={() => navigation.navigate("ScanUpload")}
-        >
-          <View style={styles.buttonContent}>
-            <Text style={styles.buttonLabel}>Scan to Upload</Text>
-          </View>
-        </Pressable>
-      </View>
-
-      <View style={styles.buttonContainer2}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.button1,
-            pressed ? styles.pressedButton : null,
-          ]}
           onPress={() => navigation.navigate("Welcome")}
         >
           <View style={styles.buttonContent}>
-            <Text style={styles.buttonLabel2}>View Store</Text>
+            <Text style={styles.buttonLabel}>View Store</Text>
           </View>
         </Pressable>
       </View>
@@ -75,8 +62,8 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 82.5,
+    height: 82.5,
     borderRadius: 10,
     marginRight: 10,
   },
@@ -87,12 +74,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#193735",
-    padding: 5,
+    padding: 3,
   },
   detailText: {
     fontSize: 16,
     color: "#193735",
-    padding: 5,
+    padding: 3,
   },
   buttonContainer1: {
     borderRadius: 18,
