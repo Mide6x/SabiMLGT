@@ -12,7 +12,7 @@ const UpdatedStore = ({ route }) => {
         <Image source={{ uri: imageUri }} style={styles.image} />
         <View style={styles.detailsContainer}>
           <Text style={styles.tagText}>{tag}</Text>
-          <Text styles={styles.detailText}>VARIANT: {variant}</Text>
+          <Text style={styles.detailText}>VARIANT: {variant}</Text>
           <Text style={styles.detailText}>PRICE: ₦{price}</Text>
           <Text style={styles.detailText}>
             MIN. ORDER QUANTITY: {minOrderQuantity} Packs

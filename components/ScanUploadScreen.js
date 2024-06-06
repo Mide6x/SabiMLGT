@@ -43,9 +43,9 @@ const ScanUploadScreen = () => {
         { label: "400g x12", value: "400g x12" },
       ],
       "Mimee Instant Noodles Chicken Flavour": [
+        { label: "70g x40", value: "70g x40" },
         { label: "100g x40", value: "100g x40" },
         { label: "120g x40", value: "120g x40" },
-        { label: "70g x40", value: "70g x40" },
       ],
       "Peak Full Cream Milk Tin": [{ label: "400g x6", value: "400g x6" }],
       "Golden Penny Sugar Cube": [{ label: "500g x50", value: "500g x50" }],
@@ -114,8 +114,9 @@ const ScanUploadScreen = () => {
     setIsLoading(true);
 
     try {
-      const apiUrl = "";
-      const apiKey = "";
+      const apiUrl =
+        "https://westeurope.api.cognitive.microsoft.com/customvision/v3.0/Prediction/4ebb09a0-c198-45e2-ae58-65651745d7bd/classify/iterations/Iteration1/image";
+      const apiKey = "493ee7d325a94d0499727eaf4f02d0f5";
 
       const headers = {
         "Prediction-Key": apiKey,
